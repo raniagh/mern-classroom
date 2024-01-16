@@ -5,7 +5,7 @@ const config = {
   mongoUri:
     process.env.MONGODB_URI ||
     process.env.MONGO_HOST ||
-    "mongodb+srv://rania123:rania123@cluster0.uwhen1o.mongodb.net/skeletondb?retryWrites=true&w=majority",
+    "mongodb+srv://rania123:rania123@cluster0.uwhen1o.mongodb.net/classroomdb?retryWrites=true&w=majority",
 };
 
 export default config;

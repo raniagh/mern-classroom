@@ -35,6 +35,12 @@ const Menu = () => {
         </Link>
         {auth.isAuthenticated() ? (
           <span>
+            {auth.isAuthenticated().user.educator && (
+              <Link to='/teach/courses'>
+                <Button style={isActive("/teach/courses")}>Teach</Button>
+              </Link>
+            )}
+
             <Link to={`/user/${userId}`}>
               <Button style={isActive(`/user/${userId}`)}>My Profile</Button>
             </Link>

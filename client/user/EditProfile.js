@@ -4,13 +4,16 @@ import {
   Card,
   CardActions,
   CardContent,
+  FormControlLabel,
   Icon,
+  Switch,
   TextField,
   Typography,
   makeStyles,
 } from "@material-ui/core";
 import { update } from "./api-user";
 import auth from "../auth/auth-helper";
+import { useNavigate } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -39,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const EditProfile = () => {
+  const navigate = useNavigate();
   const classes = useStyles();
   const authentication = auth.isAuthenticated();
   const user = authentication.user;
@@ -47,6 +51,7 @@ const EditProfile = () => {
     name: user.name,
     email: user.email,
     password: user.password,
+    educator: user.educator,
     open: false,
     error: "",
   });
@@ -55,16 +60,23 @@ const EditProfile = () => {
     setValues({ ...values, [name]: event.target.value });
   };
 
+  const handleCheck = (event, checked) => {
+    setValues({ ...values, educator: checked });
+  };
+
   const clickSubmit = async () => {
     const updatedUser = {
       name: values.name || undefined,
       email: values.email || undefined,
       password: values.password || undefined,
+      educator: values.educator || undefined,
     };
     const data = await update(user._id, token, updatedUser);
     if (data.error) {
       setValues({ ...values, error: data.error });
     } else {
+      //Update the sessionStorage user data
+      auth.updateUser(data);
       navigate(`/user/${user._id}`);
     }
   };
@@ -104,6 +116,22 @@ const EditProfile = () => {
           margin='normal'
         />
         <br />
+        <Typography variant='subtitle1' className={classes.subheading}>
+          I am an Educator
+        </Typography>
+        <FormControlLabel
+          control={
+            <Switch
+              classes={{
+                checked: classes.checked,
+                bar: classes.bar,
+              }}
+              checked={values.educator}
+              onChange={handleCheck}
+            />
+          }
+          label={values.educator ? "Yes" : "No"}
+        />
         {values.error && (
           <Typography component='p' color='error'>
             <Icon color='error' className={classes.error}>
