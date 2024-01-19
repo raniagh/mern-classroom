@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import Template from "./../template";
 import userRoutes from "./routes/user.routes";
 import authRoutes from "./routes/auth.routes";
+import courseRoutes from "./routes/course.routes";
 
 const connectDB = async () => {
   try {
@@ -18,6 +19,7 @@ connectDB();
 
 app.use("/", userRoutes);
 app.use("/", authRoutes);
+app.use("/", courseRoutes);
 
 app.get("/*", (req, res) => {
   res.status(200).send(Template());

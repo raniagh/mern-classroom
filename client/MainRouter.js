@@ -8,6 +8,9 @@ import Profile from "./user/Profile";
 import EditProfile from "./user/EditProfile";
 import PrivateRoute from "./auth/PrivateRoute";
 import Menu from "./core/Menu";
+import NewCourse from "./course/NewCourse";
+import MyCourses from "./course/MyCourses";
+import Course from "./course/Course";
 
 const MainRouter = () => {
   return (
@@ -19,11 +22,36 @@ const MainRouter = () => {
         <Route path='/signup' element={<Signup />} />
         <Route path='/signin' element={<Signin />} />
         <Route path='/user/:userId' element={<Profile />} />
+
         <Route
           path='/user/edit/:userId'
           element={
             <PrivateRoute>
               <EditProfile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/teach/courses'
+          element={
+            <PrivateRoute>
+              <MyCourses />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/teach/course/:courseId'
+          element={
+            <PrivateRoute>
+              <Course />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/teach/course/new'
+          element={
+            <PrivateRoute>
+              <NewCourse />
             </PrivateRoute>
           }
         />
