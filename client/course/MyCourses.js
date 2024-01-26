@@ -47,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+//Give the educators the ability to see a list of the courses that they have created on the platform
 const MyCourses = () => {
   const classes = useStyles();
   const navigate = useNavigate();

@@ -16,53 +16,58 @@ const Menu = () => {
   const navigate = useNavigate();
 
   const isActive = (path) => {
-    if (location.pathname == path) return { color: "#ff4081" };
-    else return { color: "#ffffff" };
+    if (location.pathname == path) return { color: "#f57c00" };
+    else return { color: "#fffde7" };
   };
   return (
     <AppBar position='static'>
       <Toolbar>
         <Typography variant='h6' color='inherit'>
-          MERN Skeleton
+          MERN Classroom
         </Typography>
-        <Link to='/'>
-          <IconButton aria-label='Home' style={isActive("/")}>
-            <HomeIcon />
-          </IconButton>
-        </Link>
-        <Link to='/users'>
-          <Button style={isActive("/users")}>Users</Button>
-        </Link>
-        {auth.isAuthenticated() ? (
-          <span>
-            {auth.isAuthenticated().user.educator && (
-              <Link to='/teach/courses'>
-                <Button style={isActive("/teach/courses")}>Teach</Button>
-              </Link>
-            )}
+        <div>
+          <Link to='/'>
+            <IconButton aria-label='Home' style={isActive("/")}>
+              <HomeIcon />
+            </IconButton>
+          </Link>
+        </div>
+        <div style={{ position: "absolute", right: "10px" }}>
+          <span style={{ float: "right" }}>
+            {auth.isAuthenticated() ? (
+              <span>
+                {auth.isAuthenticated().user.educator && (
+                  <Link to='/teach/courses'>
+                    <Button style={isActive("/teach/courses")}>Teach</Button>
+                  </Link>
+                )}
 
-            <Link to={`/user/${userId}`}>
-              <Button style={isActive(`/user/${userId}`)}>My Profile</Button>
-            </Link>
-            <Button
-              color='inherit'
-              onClick={() => {
-                auth.clearJWT(() => navigate("/"));
-              }}
-            >
-              Sign out
-            </Button>
+                <Link to={`/user/${userId}`}>
+                  <Button style={isActive(`/user/${userId}`)}>
+                    My Profile
+                  </Button>
+                </Link>
+                <Button
+                  color='inherit'
+                  onClick={() => {
+                    auth.clearJWT(() => navigate("/"));
+                  }}
+                >
+                  Sign out
+                </Button>
+              </span>
+            ) : (
+              <span>
+                <Link to='/signup'>
+                  <Button style={isActive("/signup")}> Sign Up </Button>
+                </Link>
+                <Link to='/signin'>
+                  <Button style={isActive("/signin")}> Sign In </Button>
+                </Link>
+              </span>
+            )}
           </span>
-        ) : (
-          <span>
-            <Link to='/signup'>
-              <Button style={isActive("/signup")}> Sign Up </Button>
-            </Link>
-            <Link to='/signin'>
-              <Button style={isActive("/signin")}> Sign In </Button>
-            </Link>
-          </span>
-        )}
+        </div>
       </Toolbar>
     </AppBar>
   );

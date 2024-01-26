@@ -78,6 +78,8 @@ const remove = async (req, res) => {
     });
   }
 };
+
+//Ensure that the actually user is an educator
 const isEducator = (req, res, next) => {
   const isEducator = req.profile && req.profile.educator;
   if (!isEducator) {

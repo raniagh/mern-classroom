@@ -1,5 +1,12 @@
 import mongoose from "mongoose";
 
+const LessonSchema = new mongoose.Schema({
+  title: String,
+  content: String,
+  resource_url: String,
+});
+const Lesson = mongoose.model("Lesson", LessonSchema);
+
 const CourseSchema = mongoose.Schema({
   name: {
     type: String,
@@ -26,6 +33,7 @@ const CourseSchema = mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "User",
   },
+  lessons: [LessonSchema],
   created: {
     type: Date,
     default: Date.now,

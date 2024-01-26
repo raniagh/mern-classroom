@@ -1,8 +1,14 @@
 import {
+  Avatar,
   Card,
   CardHeader,
   CardMedia,
+  Divider,
   IconButton,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
   Typography,
   makeStyles,
 } from "@material-ui/core";
@@ -12,6 +18,7 @@ import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { read } from "./api-course";
 import auth from "../auth/auth-helper";
+import NewLesson from "./NewLesson";
 
 const useStyles = makeStyles((theme) => ({
   root: theme.mixins.gutters({
@@ -86,19 +93,20 @@ const Course = () => {
   const user = auth?.isAuthenticated().user;
 
   useEffect(() => {
-    const fetchCourse = async (signal) => {
-      const data = await read(courseId, signal);
-
+    const fetchCourse = async () => {
+      const data = await read(courseId);
       if (data.error) {
         setError(data.error);
       } else {
         setCourse(data);
       }
     };
-    const abortController = new AbortController();
-    const signal = abortController.signal;
-    fetchCourse(signal);
+    fetchCourse();
   }, [courseId]);
+
+  const addLesson = (course) => {
+    setCourse(course);
+  };
 
   const imageUrl = course?._id
     ? `/api/courses/photo/${course?._id}?${new Date().getTime()}`
@@ -145,6 +153,46 @@ const Course = () => {
               {course?.description}
             </Typography>
           </div>
+        </div>
+        <Divider />
+        <div>
+          <CardHeader
+            title={
+              <Typography variant='h6' className={classes.subheading}>
+                Lessons
+              </Typography>
+            }
+            subheader={
+              <Typography variant='body1' className={classes.subheading}>
+                {course?.lessons && course?.lessons.length} lessons
+              </Typography>
+            }
+            action={
+              user &&
+              user?._id == course?.instructor?._id &&
+              !course?.published && (
+                <span className={classes.action}>
+                  <NewLesson courseId={course?._id} addLesson={addLesson} />
+                </span>
+              )
+            }
+          />
+          <List>
+            {course?.lessons &&
+              course?.lessons.map((lesson, index) => {
+                return (
+                  <span key={index}>
+                    <ListItem>
+                      <ListItemAvatar>
+                        <Avatar> {index + 1} </Avatar>
+                      </ListItemAvatar>
+                      <ListItemText primary={lesson.title} />
+                    </ListItem>
+                    <Divider variant='inset' component='li' />
+                  </span>
+                );
+              })}
+          </List>
         </div>
       </Card>
     </div>

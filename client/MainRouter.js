@@ -11,6 +11,7 @@ import Menu from "./core/Menu";
 import NewCourse from "./course/NewCourse";
 import MyCourses from "./course/MyCourses";
 import Course from "./course/Course";
+import EditCourse from "./course/EditCourse";
 
 const MainRouter = () => {
   return (
@@ -52,6 +53,14 @@ const MainRouter = () => {
           element={
             <PrivateRoute>
               <NewCourse />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/teach/course/edit/:courseId'
+          element={
+            <PrivateRoute>
+              <EditCourse />
             </PrivateRoute>
           }
         />

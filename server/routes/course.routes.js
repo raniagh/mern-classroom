@@ -25,6 +25,17 @@ router
 
 router.route("/api/courses/defaultphoto").get(courseCtrl.defaultPhoto);
 
+router
+  .route("/api/courses/:courseId/lesson/new")
+  .put(authCtrl.requireSignin, courseCtrl.isInstructor, courseCtrl.newLesson);
+
+router
+  .route("/api/courses/:courseId")
+  .put(authCtrl.requireSignin, courseCtrl.isInstructor, courseCtrl.update)
+  .delete(authCtrl.requireSignin, courseCtrl.isInstructor, courseCtrl.remove);
+
+router.route("/api/courses/published").get(courseCtrl.listPublished);
+
 router.route("/api/courses/:courseId").get(courseCtrl.read);
 router.param("courseId", courseCtrl.courseByID);
 

@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardMedia, makeStyles } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import unicornbikeImg from "./../assets/images/unicornbike.jpg";
 import { Link } from "react-router-dom";
+import { listPublished } from "../course/api-course";
+import Courses from "../course/Courses";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -23,24 +25,24 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = () => {
   const classes = useStyles();
-  return (
-    <Card className={classes.card}>
-      <Typography variant='h6' className={classes.title}>
-        Home Page
-      </Typography>
+  const [courses, setCourses] = useState([]);
 
-      <CardMedia
-        className={classes.media}
-        image={unicornbikeImg}
-        title='Unicorn Bicycle'
-      />
-      <CardContent>
-        <Typography variant='body2' component='p'>
-          Welcome to the MERN Skeleton home page.
-        </Typography>
-      </CardContent>
-    </Card>
-  );
+  useEffect(() => {
+    const fetchListPublished = async (signal) => {
+      const data = await listPublished(signal);
+
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setCourses(data);
+      }
+    };
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+    fetchListPublished(signal);
+  }, []);
+
+  return <Courses courses={courses} />;
 };
 
 export default Home;
