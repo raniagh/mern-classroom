@@ -4,6 +4,10 @@ import {
   Card,
   CardHeader,
   CardMedia,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
   IconButton,
   List,
@@ -17,7 +21,7 @@ import { Edit } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { read } from "./api-course";
+import { read, update } from "./api-course";
 import auth from "../auth/auth-helper";
 import NewLesson from "./NewLesson";
 import DeleteCourse from "./DeleteCourse";
@@ -90,10 +94,13 @@ const Course = () => {
   const classes = useStyles();
   const [course, setCourse] = useState(null);
   const [error, setError] = useState("");
+  const [open, setOpen] = useState(false);
 
   const params = useParams();
   const courseId = params.courseId;
-  const user = auth?.isAuthenticated().user;
+  const jwt = auth?.isAuthenticated();
+  const user = jwt.user;
+  const token = jwt.token;
 
   useEffect(() => {
     const fetchCourse = async () => {
@@ -115,7 +122,26 @@ const Course = () => {
     navigate("/teach/courses");
   };
 
-  const clickPublish = () => {};
+  const clickPublish = () => {
+    if (course?.lessons.length > 0) {
+      setOpen(true);
+    }
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const publish = () => {
+    let courseData = new FormData();
+    courseData.append("published", true);
+    const data = update(courseId, courseData, token);
+    if (data && data.error) {
+      setError(data.error);
+    } else {
+      setCourse({ ...course, published: true });
+      setOpen(false);
+    }
+  };
 
   const imageUrl = course?._id
     ? `/api/courses/photo/${course?._id}?${new Date().getTime()}`
@@ -222,6 +248,30 @@ const Course = () => {
           </List>
         </div>
       </Card>
+
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby='form-dialog-title'
+      >
+        <DialogTitle id='form-dialog-title'>Publish Course</DialogTitle>
+        <DialogContent>
+          <Typography variant='body1'>
+            Publishing your course will make it live to students for enrollment.
+          </Typography>
+          <Typography variant='body1'>
+            Make sure all lessons are added and ready for publishing.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color='primary' variant='contained'>
+            Cancel
+          </Button>
+          <Button onClick={publish} color='secondary' variant='contained'>
+            Publish
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

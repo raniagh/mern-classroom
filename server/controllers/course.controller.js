@@ -152,15 +152,18 @@ const defaultPhoto = (req, res) => {
   return res.sendFile(process.cwd() + defaultImage);
 };
 
-const listPublished = (req, res) => {
-  /* Course.find({ published: true }, (err, courses) => {
-    if (err) {
-      return res.status(400).json({
-        error: errorHandler.getErrorMessage(err),
-      });
-    }
+const listPublished = async (req, res) => {
+  try {
+    const courses = await Course.find({ published: true }).populate(
+      "instructor",
+      "_id name"
+    );
     res.json(courses);
-  }).populate("instructor", "_id name"); */
+  } catch (err) {
+    return res.status(400).json({
+      error: errorHandler.getErrorMessage(err),
+    });
+  }
 };
 
 export default {
