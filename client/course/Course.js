@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Button,
   Card,
   CardHeader,
   CardMedia,
@@ -14,11 +15,12 @@ import {
 } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { read } from "./api-course";
 import auth from "../auth/auth-helper";
 import NewLesson from "./NewLesson";
+import DeleteCourse from "./DeleteCourse";
 
 const useStyles = makeStyles((theme) => ({
   root: theme.mixins.gutters({
@@ -84,6 +86,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Course = () => {
+  const navigate = useNavigate();
   const classes = useStyles();
   const [course, setCourse] = useState(null);
   const [error, setError] = useState("");
@@ -107,6 +110,12 @@ const Course = () => {
   const addLesson = (course) => {
     setCourse(course);
   };
+
+  const removeCourse = (course) => {
+    navigate("/teach/courses");
+  };
+
+  const clickPublish = () => {};
 
   const imageUrl = course?._id
     ? `/api/courses/photo/${course?._id}?${new Date().getTime()}`
@@ -137,6 +146,24 @@ const Course = () => {
                       <Edit />
                     </IconButton>
                   </Link>
+                  {!course?.published ? (
+                    <>
+                      <Button
+                        color='secondary'
+                        variant='outlined'
+                        onClick={clickPublish}
+                      >
+                        {course.lessons.length == 0
+                          ? "Add atleast 1 lesson to publish"
+                          : "Publish"}
+                      </Button>
+                      <DeleteCourse course={course} onRemove={removeCourse} />
+                    </>
+                  ) : (
+                    <Button color='primary' variant='outlined'>
+                      Published
+                    </Button>
+                  )}
                 </span>
               )}
             </>

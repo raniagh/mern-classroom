@@ -2,15 +2,20 @@ import React, { useEffect, useState } from "react";
 import { read, update } from "./api-course";
 import { useNavigate, useParams } from "react-router";
 import {
+  Avatar,
   Button,
   Card,
   CardHeader,
   CardMedia,
   Divider,
   IconButton,
+  List,
+  ListItem,
+  ListItemAvatar,
   ListItemSecondaryAction,
   ListItemText,
   TextField,
+  Typography,
   makeStyles,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
@@ -232,6 +237,100 @@ const EditCourse = () => {
         </div>
 
         <Divider />
+
+        <div>
+          <CardHeader
+            title={
+              <Typography variant='h6' className={classes.subheading}>
+                Lessons - Edit and Rearrange
+              </Typography>
+            }
+            subheader={
+              <Typography variant='body1' className={classes.subheading}>
+                {course?.lessons && course?.lessons.length} lessons
+              </Typography>
+            }
+          />
+          <List>
+            {course?.lessons &&
+              course?.lessons.map((lesson, index) => {
+                return (
+                  <span key={index}>
+                    <ListItem className={classes.list}>
+                      <ListItemAvatar>
+                        <>
+                          <Avatar>{index + 1}</Avatar>
+                          {index != 0 && (
+                            <IconButton
+                              aria-label='up'
+                              color='primary'
+                              onClick={moveUp(index)}
+                              className={classes.upArrow}
+                            >
+                              <ArrowUp />
+                            </IconButton>
+                          )}
+                        </>
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={
+                          <>
+                            <TextField
+                              margin='dense'
+                              label='Title'
+                              type='text'
+                              fullWidth
+                              value={lesson?.title}
+                              onChange={handleLessonChange("title", index)}
+                            />
+                            <br />
+                            <TextField
+                              margin='dense'
+                              multiline
+                              label='Content'
+                              type='text'
+                              fullWidth
+                              value={lesson?.content}
+                              onChange={handleLessonChange("content", index)}
+                            />
+                            <br />
+                            <TextField
+                              margin='dense'
+                              label='Resource link'
+                              type='text'
+                              fullWidth
+                              value={lesson?.resource_url}
+                              onChange={handleLessonChange(
+                                "resource_url",
+                                index
+                              )}
+                            />
+                            <br />
+                          </>
+                        }
+                      />
+                      {!course.published && (
+                        <ListItemSecondaryAction>
+                          <IconButton
+                            edge='end'
+                            aria-label='up'
+                            color='primary'
+                            onClick={deleteLesson(index)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      )}
+                    </ListItem>
+                    <Divider
+                      style={{ backgroundColor: "rgb(106, 106, 106)" }}
+                      component='li'
+                    />
+                  </span>
+                );
+              })}
+          </List>
+        </div>
       </Card>
     </div>
   );

@@ -74,6 +74,22 @@ const update = async (courseId, course, token) => {
   }
 };
 
+const remove = async (courseId, token) => {
+  try {
+    let response = await fetch("/api/courses/" + courseId, {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    });
+    return await response.json();
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 const listPublished = async (signal) => {
   try {
     let response = await fetch("/api/courses/published", {
@@ -86,4 +102,12 @@ const listPublished = async (signal) => {
   }
 };
 
-export { create, listByInstructor, read, newLesson, update, listPublished };
+export {
+  create,
+  listByInstructor,
+  read,
+  newLesson,
+  update,
+  listPublished,
+  remove,
+};
