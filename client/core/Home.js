@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles } from "@material-ui/core";
+import { Card, Typography, makeStyles } from "@material-ui/core";
 import { listPublished } from "../course/api-course";
 import Courses from "../course/Courses";
+import auth from "../auth/auth-helper";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -63,6 +64,9 @@ const useStyles = makeStyles((theme) => ({
 const Home = () => {
   const classes = useStyles();
   const [courses, setCourses] = useState([]);
+  const [enrolled, setEnrolled] = useState([]);
+
+  const user = auth?.isAuthenticated().user;
 
   useEffect(() => {
     const fetchListPublished = async (signal) => {
@@ -78,7 +82,34 @@ const Home = () => {
     fetchListPublished(signal);
   }, []);
 
-  return <Courses courses={courses} />;
+  return (
+    <div className={classes.extraTop}>
+      {user && (
+        <Card className={`${classes.card} ${classes.enrolledCard}`}>
+          <Typography
+            variant='h6'
+            component='h2'
+            className={classes.enrolledTitle}
+          >
+            Courses you are enrolled in
+          </Typography>
+        </Card>
+      )}
+
+      <Card className={classes.card}>
+        <Typography variant='h5' component='h2'>
+          All Courses
+        </Typography>
+        {courses.length != 0 && courses.length != enrolled.length ? (
+          <Courses courses={courses} common={enrolled} />
+        ) : (
+          <Typography variant='body1' className={classes.noTitle}>
+            No new courses.
+          </Typography>
+        )}
+      </Card>
+    </div>
+  );
 };
 
 export default Home;
